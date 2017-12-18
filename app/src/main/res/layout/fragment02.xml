@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal"
+    >
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/c_rv"
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="7"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <com.youth.banner.Banner
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/c_banner"
+            android:layout_width="match_parent"
+            android:layout_height="150dp" >
+        </com.youth.banner.Banner>
+        <ExpandableListView
+            android:id="@+id/c_expand"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent">
+        </ExpandableListView>
+    </LinearLayout>
+
+</LinearLayout>
