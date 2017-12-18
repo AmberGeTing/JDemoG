@@ -12,6 +12,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -191,10 +192,17 @@ public class Fragment01 extends Fragment implements IMainActivity, OnClick {
             @Override
             public void onClick(View v) {
                 //搜索--跳转到展示内容的界面
-                Intent intent = new Intent(getActivity(), SouSuoActivity.class);
-                intent.putExtra("keywords",mSou.getText().toString().trim());
-                intent.putExtra("page","1");
-                startActivity(intent);
+               //先判断输入的内容是否为空
+                String s = mSou.getText().toString().trim();
+                if(TextUtils.isEmpty(s)){
+                    Toast.makeText(getContext(),"搜索内容不能为空!!!", Toast.LENGTH_SHORT).show();
+                }else{
+                    Intent intent = new Intent(getActivity(), SouSuoActivity.class);
+                    intent.putExtra("keywords",s);
+                    intent.putExtra("page","1");
+                    startActivity(intent);
+                }
+
             }
         });
 
