@@ -12,12 +12,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMAuthListener;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.media.UMWeb;
+
 
 import java.util.List;
+import java.util.Map;
 
 import bwie.com.jdemo.R;
 import bwie.com.jdemo.adapter.XinAdapter;
@@ -30,6 +40,7 @@ import bwie.com.jdemo.bean.XinBean;
 import bwie.com.jdemo.comm.OnClick;
 import bwie.com.jdemo.presenter.XinPresenter;
 import bwie.com.jdemo.view.IMainActivity;
+import bwie.com.jdemo.view.InfoDetailActivity;
 import bwie.com.jdemo.view.XaingQingActivity;
 import bwie.com.jdemo.view.XinXIangQingActivity;
 
@@ -52,6 +63,7 @@ public class Fragment03 extends Fragment implements IMainActivity,OnClick{
     private SimpleDraweeView mTou5;
     private RecyclerView mXinLv;
     private XinPresenter xinPresenter;
+    private SHARE_MEDIA share_media;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,8 +71,92 @@ public class Fragment03 extends Fragment implements IMainActivity,OnClick{
         xinPresenter = new XinPresenter(this);
         xinPresenter.login();
         initView(view);
+        //点击分享
+        mFenxiang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                  ShareWeb(R.drawable.share);
+            }
+        });
+        //获取授权
+        UMShareAPI.get(getContext()).getPlatformInfo(getActivity(),share_media, authListener);
+       //登录
+        
         return view;
     }
+    //登录功能
+
+    //授权功能
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(getContext()).onActivityResult(requestCode, resultCode, data);
+    }
+    UMAuthListener authListener = new UMAuthListener() {
+        @Override
+        public void onStart(SHARE_MEDIA platform) {
+
+        }
+
+        @Override
+        public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+            String temp = "";
+            for (String key : data.keySet()) {
+                temp = temp + key + " : " + data.get(key) + "\n";
+            }
+
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA platform, int action, Throwable t) {
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA platform, int action) {
+
+        }
+    };
+
+
+    //分享的接口
+    private void ShareWeb(int thumb_img){
+        UMImage thumb = new UMImage(getActivity(),thumb_img);
+        UMWeb web = new UMWeb("http://baidu.com");
+        web.setThumb(thumb);
+        web.setDescription("");
+        web.setTitle("测试");
+        new ShareAction(getActivity()).withMedia(web).setPlatform(SHARE_MEDIA.QQ).setCallback(shareListener).share();
+    }
+    //创建分享的接口
+
+    private UMShareListener shareListener = new UMShareListener() {
+
+        @Override
+        public void onStart(SHARE_MEDIA platform) {
+            Toast.makeText(getActivity(),"开始",Toast.LENGTH_LONG).show();
+        }
+
+
+        @Override
+        public void onResult(SHARE_MEDIA platform) {
+            Toast.makeText(getActivity(),"结果",Toast.LENGTH_LONG).show();
+
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA platform, Throwable t) {
+            Toast.makeText(getActivity(),"错误",Toast.LENGTH_LONG).show();
+        }
+
+
+        @Override
+        public void onCancel(SHARE_MEDIA platform) {
+            Toast.makeText(getActivity(),"关闭",Toast.LENGTH_LONG).show();
+
+        }
+    };
+
+
 
     private void initView(View view) {
         mFenxiang = (ImageView) view.findViewById(R.id.fenxiang);

@@ -30,6 +30,7 @@ import com.gongwen.marqueen.SimpleMF;
 import com.gongwen.marqueen.SimpleMarqueeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -248,8 +249,14 @@ public class Fragment01 extends Fragment implements IMainActivity, OnClick {
                 Toast.makeText(getContext(), holder.data, Toast.LENGTH_SHORT).show();
             }
         });
+        //点击分享实现分享
+
         return view;
     }
+
+
+
+
 
     @Override
     public void show(Bean bean) {

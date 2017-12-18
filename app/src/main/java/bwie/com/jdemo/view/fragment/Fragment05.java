@@ -20,6 +20,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.umeng.socialize.UMAuthListener;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.utils.SocializeUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -28,6 +33,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bwie.com.jdemo.R;
+import bwie.com.jdemo.adapter.AuthAdapter;
+import bwie.com.jdemo.adapter.ShareAdapter;
 import bwie.com.jdemo.utils.OkHttp;
 import bwie.com.jdemo.view.LoginActivity;
 import bwie.com.jdemo.view.XiaoXiActivity;
@@ -55,7 +62,7 @@ public class Fragment05 extends Fragment {
     private File tempFile;
     private ImageView mTou;
     private LinearLayout mMyDing;
-
+    private ShareAdapter shareAdapter;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +79,7 @@ public class Fragment05 extends Fragment {
         View view = inflater.inflate(R.layout.fragment05, container, false);
 
         initView(view);
+
         //点击登录--跳转
         //点击跳转到登录注册的界面
         mLogin.setOnClickListener(new View.OnClickListener() {
@@ -124,8 +132,38 @@ public class Fragment05 extends Fragment {
 
             }
         });
+        //点击登录
+        mZhi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UMShareAPI.get(getContext()).getPlatformInfo(getActivity(), SHARE_MEDIA.QQ, umAuthListener);
+            }
+        });
         return view;
     }
+     //登录的方法
+     private UMAuthListener umAuthListener = new UMAuthListener() {
+         @Override
+         public void onStart(SHARE_MEDIA platform) {
+             //授权开始的回调
+         }
+         @Override
+         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+             Toast.makeText(getActivity(), "Authorize succeed", Toast.LENGTH_SHORT).show();
+
+         }
+
+         @Override
+         public void onError(SHARE_MEDIA platform, int action, Throwable t) {
+             Toast.makeText(getActivity(), "Authorize fail", Toast.LENGTH_SHORT).show();
+         }
+
+         @Override
+         public void onCancel(SHARE_MEDIA platform, int action) {
+             Toast.makeText(getActivity(), "Authorize cancel", Toast.LENGTH_SHORT).show();
+         }
+     };
+
 
     /*
   * 判断sdcard是否被挂载
@@ -201,6 +239,9 @@ public class Fragment05 extends Fragment {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+        //登录成功之后的回调
+        UMShareAPI.get(getActivity()).onActivityResult(requestCode, resultCode, data);
+
     }
 
     //保存图片到SharedPreferences
