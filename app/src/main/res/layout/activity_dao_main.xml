@@ -25,12 +25,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
-
-    <master.flame.danmaku.ui.widget.DanmakuView
-        android:id="@+id/danmaku_view"
-        android:layout_margin="10dp"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp" />
+        android:layout_height="match_parent">
+        <com.dl7.player.media.IjkPlayerView
+            android:id="@+id/player_view"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"/>
+        <master.flame.danmaku.ui.widget.DanmakuView
+            android:id="@+id/danmaku_view"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="150dp" />
+    </RelativeLayout>
+
     <LinearLayout
         android:background="#ff3360"
         android:visibility="gone"

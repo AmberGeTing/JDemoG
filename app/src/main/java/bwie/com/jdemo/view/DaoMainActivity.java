@@ -1,10 +1,13 @@
 package bwie.com.jdemo.view;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.dl7.player.media.IjkPlayerView;
 
 import java.util.Random;
 
@@ -58,7 +63,8 @@ public class DaoMainActivity extends AppCompatActivity {
      */
     private Button mSend;
     private LinearLayout mOperationLayout;
-
+    private IjkPlayerView mPlayerView;
+    private Uri mUri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,8 +76,18 @@ public class DaoMainActivity extends AppCompatActivity {
         String title = intent.getStringExtra("title");
         //设置值
         mTitle.setText(title);
+       //设置视频
+        mUri = Uri.parse("http://2449.vod.myqcloud.com/2449_22ca37a6ea9011e5acaaf51d105342e3.f20.mp4");
 
-        //设置视频
+        mPlayerView.init()
+                .setVideoPath(mUri)
+                .setMediaQuality(IjkPlayerView.MEDIA_QUALITY_HIGH)
+                .enableDanmaku()
+                .start();
+
+
+
+        //设置弹幕
         mDanmakuView = (DanmakuView) findViewById(R.id.danmaku_view);
         mDanmakuView.enableDanmakuDrawingCache(true);
         mDanmakuView.setCallback(new DrawHandler.Callback() {
@@ -105,7 +121,6 @@ public class DaoMainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (mOperationLayout.getVisibility() == View.GONE) {
-                    Toast.makeText(DaoMainActivity.this,"sdf",Toast.LENGTH_SHORT).show();
                     mOperationLayout.setVisibility(View.VISIBLE);
                 } else {
                     mOperationLayout.setVisibility(View.GONE);
@@ -122,7 +137,7 @@ public class DaoMainActivity extends AppCompatActivity {
                 }
             }
         });
-        getWindow().getDecorView().setOnSystemUiVisibilityChangeListener (new View.OnSystemUiVisibilityChangeListener() {
+        getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
             @Override
             public void onSystemUiVisibilityChange(int visibility) {
                 if (visibility == View.SYSTEM_UI_FLAG_VISIBLE) {
@@ -144,7 +159,7 @@ public class DaoMainActivity extends AppCompatActivity {
         danmaku.text = content;
         //danmaku.padding = 10;
         danmaku.textSize = sp2px(20);
-        danmaku.textColor = Color.BLACK;
+        danmaku.textColor = Color.WHITE;
         danmaku.setTime(mDanmakuView.getCurrentTime());
         if (withBorder) {
             danmaku.borderColor = Color.GREEN;
@@ -187,6 +202,7 @@ public class DaoMainActivity extends AppCompatActivity {
         if (mDanmakuView != null && mDanmakuView.isPrepared()) {
             mDanmakuView.pause();
         }
+        mPlayerView.onPause();
     }
 
     @Override
@@ -195,6 +211,26 @@ public class DaoMainActivity extends AppCompatActivity {
         if (mDanmakuView != null && mDanmakuView.isPrepared() && mDanmakuView.isPaused()) {
             mDanmakuView.resume();
         }
+        mPlayerView.onResume();
+    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mPlayerView.configurationChanged(newConfig);
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (mPlayerView.handleVolumeKey(keyCode)) {
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+    @Override
+    public void onBackPressed() {
+        if (mPlayerView.onBackPressed()) {
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override
@@ -205,6 +241,7 @@ public class DaoMainActivity extends AppCompatActivity {
             mDanmakuView.release();
             mDanmakuView = null;
         }
+        mPlayerView.onDestroy();
     }
 
     private void initView() {
@@ -213,11 +250,10 @@ public class DaoMainActivity extends AppCompatActivity {
         mDanmakuView = (DanmakuView) findViewById(R.id.danmaku_view);
 
 
-
-
         mEditText = (EditText) findViewById(R.id.edit_text);
         mSend = (Button) findViewById(R.id.send);
         mOperationLayout = (LinearLayout) findViewById(R.id.operation_layout);
+        mPlayerView = (IjkPlayerView) findViewById(R.id.player_view);
     }
 
 

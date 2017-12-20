@@ -47,4 +47,5 @@ dependencies {
     compile 'com.github.open-android:JieCaoVideoPlayer:0.1.0'
     compile 'com.zhy:flowlayout-lib:1.0.3'
     compile 'com.android.support:design:24.1.1'
+    compile 'com.github.open-android:IjkPlayer:1.0.0'
 }
