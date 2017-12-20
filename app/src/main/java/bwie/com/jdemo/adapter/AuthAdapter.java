@@ -33,6 +33,8 @@ public class AuthAdapter extends BaseAdapter {
     private Context mContext;
     private Activity mActivity;
     private ProgressDialog dialog;
+
+
     public AuthAdapter(Context context, ArrayList<SnsPlatform> list) {
         this.list = list;
         this.mContext = context.getApplicationContext();
